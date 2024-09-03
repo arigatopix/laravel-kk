@@ -12,21 +12,16 @@ Route::get('/auth/login', function () {
 Route::get('/auth/callback', function () {
     $kUser = Socialite::driver('keycloak')->user();
 
-    $token = $kUser->token;
-    $refreshToken = $kUser->refreshToken;
-    $expiresIn = $kUser->expiresIn;
-
     $user = User::updateOrCreate([
-        'github_id' => $kUser->id,
-    ], [
-        'name' => $kUser->name,
         'email' => $kUser->email,
-        'password' => $kUser->email,
+        'name' => $kUser->name,
+        'password' => "1234",
+
     ]);
 
     Auth::login($user);
 
-    return redirect()->intended('/api/hello');
+    return response()->json($kUser, 200);
 });
 
 Route::get('/auth/logout', function () {
